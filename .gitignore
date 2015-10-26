@@ -1,0 +1,49 @@
+Last login: Sun Oct 25 16:17:22 on ttys000
+Magneto:twitterBot cyrano$ cd /Users/cyrano/Documents/coding_workspace/
+Magneto:coding_workspace cyrano$ cd DEV-Lovelup/
+Magneto:DEV-Lovelup cyrano$ vim .gitignore 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+node_modules/
+.c9/
+.idea/
+.pyc
+.DS_Store
+.idea
+*.pyc
+
+# Created by https://www.gitignore.io
+
+### JetBrains ###
+# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
+
+*.iml
+
+## Directory-based project format:
+.idea/
+# if you remove the above rule, at least ignore the following:
+
+# User-specific stuff:
+# .idea/workspace.xml
+# .idea/tasks.xml
+# .idea/dictionaries
+".gitignore" 196L, 2806C
+
