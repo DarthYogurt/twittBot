@@ -1,27 +1,3 @@
-Last login: Sun Oct 25 16:17:22 on ttys000
-Magneto:twitterBot cyrano$ cd /Users/cyrano/Documents/coding_workspace/
-Magneto:coding_workspace cyrano$ cd DEV-Lovelup/
-Magneto:DEV-Lovelup cyrano$ vim .gitignore 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 node_modules/
 .c9/
 .idea/
