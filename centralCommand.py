@@ -18,10 +18,13 @@ Unfollow Bot will activate at a time from scheduler
 """
 
 import datetime
+import oauth2
+import json
 
+import config
 
 TAGS = [
-    "gamer"
+    "#gamer"
 ]
 
 def main_cortex():
@@ -29,19 +32,51 @@ def main_cortex():
     current_time = datetime.datetime.utcnow()
     current_hour = current_time.hour
 
-
     # if current_hour == 0:
     if current_hour:
-        id_crawler(TAGS)
+        crawler_bot(TAGS)
 
-
-def id_crawler(tags):
+def crowler_bot(tags):
+    url = 'https://api.twitter.com/1.1/search/tweets.json?q=%23gamer'
+    response = json.loads(oauth_req( url, config.ACCESS_TOKEN, config.ACCESS_TOKEN_SECRET, "GET" ))
+    tweets = response['statuses']
     True
 
+    # follow(tweets[0]['user']['id_str'])
+
+
+def list_manager_bot():
+    url = 'https://api.twitter.com/1.1/friends/list.json'
+    user_list = json.loads(oauth_req(url, config.ACCESS_TOKEN, config.ACCESS_TOKEN_SECRET, "GET"))
+
+    for i in range(len(user_list)):
+        print i
+        # if user_list[i]['follow_request_sent'] == True:
+            # print user_list[i]['name'], user_list[i]['follow_request_sent']
+
+def follow(id):
+
+    url = 'https://api.twitter.com/1.1/friendships/create.json?user_id='+ id +'&follow=true'
+    response = json.loads(oauth_req( url, config.ACCESS_TOKEN, config.ACCESS_TOKEN_SECRET, "POST" ))
+    print response
 
 
 
 
-main_cortex()
+def oauth_req(url, key, secret, http_method, post_body='', http_headers=None):
+    consumer = oauth2.Consumer(key=config.CONSUMER_KEY, secret=config.CONSUMER_SECRET)
+    token = oauth2.Token(key=key, secret=secret)
+    client = oauth2.Client(consumer, token)
+    resp, content = client.request( url, method=http_method, body=post_body, headers=http_headers )
+    return content
+
+
+
+# main_cortex()
+# id_crawler(TAGS)
+
+list_manager_bot()
+
+
 
 
