@@ -22,6 +22,7 @@ import oauth2
 import json
 
 import config
+import dbCommand
 
 TAGS = [
     "#gamer"
@@ -44,15 +45,24 @@ def crowler_bot(tags):
 
     # follow(tweets[0]['user']['id_str'])
 
-
 def list_manager_bot():
-    url = 'https://api.twitter.com/1.1/friends/list.json'
-    user_list = json.loads(oauth_req(url, config.ACCESS_TOKEN, config.ACCESS_TOKEN_SECRET, "GET"))
+    url = 'https://api.twitter.com/1.1/friends/list.json?count=200'
+    response = json.loads(oauth_req(url, config.ACCESS_TOKEN, config.ACCESS_TOKEN_SECRET, "GET"))
+    user_list = response['users']
 
     for i in range(len(user_list)):
-        print i
+        print user_list[i]['name']
         # if user_list[i]['follow_request_sent'] == True:
             # print user_list[i]['name'], user_list[i]['follow_request_sent']
+
+    url2 = 'https://api.twitter.com/1.1/friends/list.json?count=200&cursor=' + response['next_cursor_str']
+    response2 = json.loads(oauth_req(url2, config.ACCESS_TOKEN, config.ACCESS_TOKEN_SECRET, "GET"))
+
+    for j in range(len(response2['users'])):
+        print response2['users'][j]['name']
+
+
+
 
 def follow(id):
 
@@ -72,11 +82,11 @@ def oauth_req(url, key, secret, http_method, post_body='', http_headers=None):
 
 
 
+
+
 # main_cortex()
 # id_crawler(TAGS)
-
 list_manager_bot()
-
 
 
 

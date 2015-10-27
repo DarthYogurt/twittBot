@@ -1,0 +1,3 @@
+
+def getDatabase():
+    return "DATABASE"
