@@ -1,3 +1,5 @@
+from pymongo import MongoClient
 
-def getDatabase():
+
+def get_users():
     return "DATABASE"

@@ -15,6 +15,8 @@ Follow bot executed hourly and follows those who are scheduled
 Followed By bot, checks to see if you're unfollowed, or not followed
 Scheduler decides when to unfollow
 Unfollow Bot will activate at a time from scheduler
+
+PROBLEM - after list reaches greater than 36000, then will not be able to compare lists. Will need modification
 """
 
 import datetime
@@ -45,21 +47,43 @@ def crowler_bot(tags):
 
     # follow(tweets[0]['user']['id_str'])
 
-def list_manager_bot():
-    url = 'https://api.twitter.com/1.1/friends/list.json?count=200'
+def get_twitter_friend_list(list, cursor):
+    '''
+    Needs to paginate due to twitter rest api. Using recursive solution to get data.
+    :param list:
+    List of users
+    :param cursor:
+     0 = end of pagination
+     1 = start of pagination
+     24324141 = twitter next cursor info
+    :return:
+    '''
+    if cursor > 1:
+        url = 'https://api.twitter.com/1.1/friends/list.json?count=200&cursor=' + str(cursor)
+    elif cursor == 0:
+        return list
+    elif cursor == 1:
+        url = 'https://api.twitter.com/1.1/friends/list.json?count=200'
     response = json.loads(oauth_req(url, config.ACCESS_TOKEN, config.ACCESS_TOKEN_SECRET, "GET"))
     user_list = response['users']
-
     for i in range(len(user_list)):
-        print user_list[i]['name']
-        # if user_list[i]['follow_request_sent'] == True:
-            # print user_list[i]['name'], user_list[i]['follow_request_sent']
+        list.append(user_list[i])
 
-    url2 = 'https://api.twitter.com/1.1/friends/list.json?count=200&cursor=' + response['next_cursor_str']
-    response2 = json.loads(oauth_req(url2, config.ACCESS_TOKEN, config.ACCESS_TOKEN_SECRET, "GET"))
+    return get_friend_list(list, response['next_cursor'])
 
-    for j in range(len(response2['users'])):
-        print response2['users'][j]['name']
+def get_db_friend_list():
+    return dbCommand.get_users()
+
+
+def list_manager_bot():
+    '''
+    Compare with list in DB
+    if not in db then add
+
+    :return:
+    '''
+    twitter_users = get_twitter_friend_list([],1)
+    db_users = get_db_friend_list()
 
 
 
