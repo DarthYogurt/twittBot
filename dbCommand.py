@@ -22,16 +22,20 @@ user_schema = mongothon.Schema({
 User = mongothon.create_model(user_schema, db['users'])
 
 def get_user_by_id(id):
-    print id
     return User.find_one({'id': str(id)})
 
+def get_users( following, following_me ):
+    users = []
+    for u in User.find({ "following": following, "following_me": following_me }):
+        users.append(u)
+    return users
 
 def add_user(user):
-
     newUser = User({
                 "id": str(user['id']),
                 "name": user['name'],
-                "following": True
+                "following": True,
+                "date_followed": datetime.utcnow()
             })
     newUser.save()
 
@@ -43,10 +47,16 @@ def add_user_id(id):
     })
     newUser.save()
 
-def update_following_me_true(id):
-    User.update({"id": id}, {"following_me": {"$set": True}})
+def update_following_me(id, following_me):
+    usr =  User.find_one({'id': str(id)})
+    usr['following_me'] = following_me
+    usr.save()
 
-def update_following_me(user):
-    usr =  User.find_one({'id': user['id_str']})
-    usr['following_me'] = False
+def update_following(id, following):
+    usr = User.find_one({'id': str(id)})
+    usr['following'] = following
+    if following:
+        usr['date_followed'] = datetime.utcnow()
+    else:
+        usr['date_unfollowed'] = datetime.utcnow()
     usr.save()
