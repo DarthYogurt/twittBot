@@ -2,6 +2,7 @@ from pymongo import MongoClient
 from datetime import datetime
 # from mongothon import Schema
 import mongothon
+from datetime import timedelta
 
 import config
 
@@ -24,9 +25,16 @@ User = mongothon.create_model(user_schema, db['users'])
 def get_user_by_id(id):
     return User.find_one({'id': str(id)})
 
-def get_users( following, following_me ):
+def get_users( following, following_me, days ):
     users = []
-    for u in User.find({ "following": following, "following_me": following_me }):
+
+    query = { "following": following, "following_me": following_me }
+    if following == True and following_me == False:
+        query['date_followed'] = { '$lt': datetime.utcnow() - timedelta( days=days )}
+    if following == False and following_me == False:
+        query['date_unfollowed'] = { '$lt': datetime.utcnow() - timedelta( days=days )}
+
+    for u in User.find(query):
         users.append(u)
     return users
 
@@ -54,9 +62,14 @@ def update_following_me(id, following_me):
 
 def update_following(id, following):
     usr = User.find_one({'id': str(id)})
+
     usr['following'] = following
     if following:
         usr['date_followed'] = datetime.utcnow()
     else:
         usr['date_unfollowed'] = datetime.utcnow()
     usr.save()
+
+
+
+# print get_users(True, True, 2)

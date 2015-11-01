@@ -32,9 +32,9 @@ FOLLOW_ME = [29307927, 128046970, 3168160135, 2990661978, 961343107, 3096940393,
 # I_FOLLOW = [{u'follow_request_sent': False, 'id': 29307927, 'id_str': '29307927', 'name': "testername"}]
 # FOLLOW_ME = [29307927, 12421]
 TAGS = [
-    "#gamer",
-    "#starwars",
-    "#cosplay"
+    "gamer",
+    "starwars",
+    "cosplay"
 ]
 BASE_URL = 'https://api.twitter.com/1.1/'
 
@@ -51,11 +51,16 @@ def main_cortex():
     list_manager_bot()
 
 def crawler_bot(tags):
-    url = 'https://api.twitter.com/1.1/search/tweets.json?q=%23gamer'
+    url = BASE_URL + 'search/tweets.json?q=' + str(random.choice(tags))
     response = json.loads(oauth_req( url, config.ACCESS_TOKEN, config.ACCESS_TOKEN_SECRET, "GET" ))
     tweets = response['statuses']
 
-    # follow(tweets[0]['user']['id_str'])
+    if 'errors' in response:
+        print response['errors']
+
+    usr = random.choice(tweets)
+    dbCommand.add_user_id(usr['user']['id_str'])
+    follow(usr['user']['id_str'])
 
 def get_twitter_friend_list(list, cursor):
     '''
@@ -128,18 +133,30 @@ def list_manager_bot():
     update_following_me_db()  #people who are following me
 
 def remove_non_follower():
-    users = dbCommand.get_users( following = True, following_me = False)
+    users = dbCommand.get_users( following = True, following_me = False, days = 2)
+    if len(users) < 1:
+        return
     usr =  random.choice(users)
     un_follow( usr['id'] )
     dbCommand.update_following( usr['id'], False )
-    print usr
+    # print usr
 
 def add_follower_following_me():
-    users = dbCommand.get_users( following = False, following_me = True)
+    users = dbCommand.get_users( following = False, following_me = True, days = 0)
+    if len(users) < 1:
+        return
     usr =  random.choice(users)
     follow(usr['id'])
     dbCommand.update_following( usr['id'], True )
-    print usr
+    # print usr
+
+def retry_add_non_follower():
+    users = dbCommand.get_users( following = False, following_me = False, days = 2)
+    if len(users) < 1:
+        return
+    usr = random.choice(users)
+    follow( usr['id'] )
+    dbCommand.update_following( usr['id'], True )
 
 def follow(id):
     url = BASE_URL + 'friendships/create.json?user_id='+ id +'&follow=true'
@@ -165,13 +182,12 @@ def oauth_req(url, key, secret, http_method, post_body='', http_headers=None):
 
 # main_cortex()
 
-# remove_non_follower()
+
+list_manager_bot()
+crawler_bot(TAGS)
+remove_non_follower()
 add_follower_following_me()
-# id_crawler(TAGS)
-
-# list_manager_bot()
-
-# print dbCommand.get_users()
+retry_add_non_follower()
 
 
 
