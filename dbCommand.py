@@ -30,7 +30,11 @@ def get_users( following, following_me, days ):
 
     query = { "following": following, "following_me": following_me }
     if following == True and following_me == False:
-        query['date_followed'] = { '$lt': datetime.utcnow() - timedelta( days=days )}
+        query['$or'] = [
+            {'date_followed': { '$lt': datetime.utcnow() - timedelta( days=days )} },
+            {'date_followed': { '$exists': False } }
+        ]
+        # query['date_followed'] = { '$lt': datetime.utcnow() - timedelta( days=days )}
     if following == False and following_me == False:
         query['date_unfollowed'] = { '$lt': datetime.utcnow() - timedelta( days=days )}
 

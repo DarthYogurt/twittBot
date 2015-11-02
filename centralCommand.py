@@ -140,7 +140,6 @@ def remove_non_follower():
     usr =  random.choice(users)
     un_follow( usr['id'] )
     dbCommand.update_following( usr['id'], False )
-    # print usr
 
 def add_follower_following_me():
     users = dbCommand.get_users( following = False, following_me = True, days = 0)
