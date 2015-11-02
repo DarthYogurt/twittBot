@@ -34,7 +34,7 @@ def get_users( following, following_me, days ):
             {'date_followed': { '$lt': datetime.utcnow() - timedelta( days=days )} },
             {'date_followed': { '$exists': False } }
         ]
-        # query['date_followed'] = { '$lt': datetime.utcnow() - timedelta( days=days )}
+
     if following == False and following_me == False:
         query['date_unfollowed'] = { '$lt': datetime.utcnow() - timedelta( days=days )}
 
