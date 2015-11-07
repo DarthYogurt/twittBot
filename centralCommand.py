@@ -186,6 +186,7 @@ print datetime.datetime.utcnow()
 list_manager_bot()
 crawler_bot(TAGS)
 remove_non_follower()
+remove_non_follower()
 add_follower_following_me()
 retry_add_non_follower()
 
