@@ -74,6 +74,10 @@ def update_following(id, following):
         usr['date_unfollowed'] = datetime.utcnow()
     usr.save()
 
+def get_twitter_follow_list():
+    return User.find({"following": True})
+def get_twitter_follow_me_list():
+    return User.find({"following_me": True})
 
 
 # print get_users(True, True, 2)

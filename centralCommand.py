@@ -173,19 +173,24 @@ def oauth_req(url, key, secret, http_method, post_body='', http_headers=None):
     resp, content = client.request( url, method=http_method, body=post_body, headers=http_headers )
     return content
 
+def get_counts():
 
+    following = dbCommand.get_twitter_follow_list().count()
+    following_me = dbCommand.get_twitter_follow_me_list().count()
+    return "Following", following, "Following_Me:", following_me
 
 
 
 # main_cortex()
 
-print datetime.datetime.utcnow()
+print datetime.datetime.now()
 list_manager_bot()
 crawler_bot(TAGS)
 remove_non_follower()
 remove_non_follower()
 add_follower_following_me()
 retry_add_non_follower()
+print get_counts()
 
 
 
