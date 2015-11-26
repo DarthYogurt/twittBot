@@ -106,6 +106,7 @@ def update_friend_list_db():
         user = dbCommand.get_user_by_id(id)
         if user == None:
              dbCommand.add_id(id, following=True, following_me=False)
+             dbCommand.update_followed_time(id)
         else:
             if user['following'] == False:
                 dbCommand.update_following(id, True)
