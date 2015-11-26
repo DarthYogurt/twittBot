@@ -42,21 +42,23 @@ def get_users( following, following_me, days ):
         users.append(u)
     return users
 
-def add_user(user):
-    newUser = User({
-                "id": str(user['id']),
-                "name": user['name'],
-                "following": True,
-                "date_followed": datetime.utcnow()
-            })
-    newUser.save()
+# def add_user(user):
+#     newUser = User({
+#                 "id": str(user['id']),
+#                 # "name": user['name'],
+#                 "following": True,
+#                 "date_followed": datetime.utcnow()
+#             })
+#     newUser.save()
 
-def add_user_id(id):
+def add_id(id, following, following_me):
     newUser = User({
         "id": str(id),
-        "following": False,
-        "following_me": True
+        "following": following,
+        "following_me": following_me,
     })
+    if following:
+        newUser['date_followed'] = datetime.utcnow()
     newUser.save()
 
 def update_following_me(id, following_me):
@@ -66,12 +68,21 @@ def update_following_me(id, following_me):
 
 def update_following(id, following):
     usr = User.find_one({'id': str(id)})
-
     usr['following'] = following
-    if following:
-        usr['date_followed'] = datetime.utcnow()
-    else:
-        usr['date_unfollowed'] = datetime.utcnow()
+    # if following:
+    #     usr['date_followed'] = datetime.utcnow()
+    # if following==False:
+    #     usr['date_unfollowed'] = datetime.utcnow()
+    usr.save()
+
+def update_followed_time(id):
+    usr = User.find_one({'id': str(id)})
+    usr['date_followed'] = datetime.utcnow()
+    usr.save()
+
+def update_unfollowed_time(id):
+    usr = User.find_one({'id': str(id)})
+    usr['date_unfollowed'] = datetime.utcnow()
     usr.save()
 
 def get_twitter_follow_list():
